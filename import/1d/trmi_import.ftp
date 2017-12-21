@@ -1,0 +1,25 @@
+open mrn-ftp.thomsonreuters.com
+user 8945455 sDk7sJworu9mbn3b
+
+lcd ../../../marketPsychData/data1t
+
+bin
+prompt
+
+cd /TRMI_LIVE/COU/WDAI_UDAI/
+mget *
+
+cd /TRMI_LIVE/CUR/WDAI_UDAI/
+mget *
+
+cd /TRMI_LIVE/COM_AGR/WDAI_UDAI/
+mget *
+
+cd /TRMI_LIVE/COM_ENM/WDAI_UDAI/
+mget *
+
+cd /TRMI_LIVE/CMPNY_GRP/WDAI_UDAI/
+mget *
+
+
+quit

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+procname=$1
+echo "Stop $procname processes........."
+
+ps -aef | grep $procname | grep -v grep | awk '{print $2}' > ./.proc.out
+
+cat ./.proc.out | while read line
+do
+    echo "killing process ID $line....."
+    kill -9 $line
+done

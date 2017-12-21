@@ -1,0 +1,1 @@
+"select * from tickdb.tick_1h  where assetCode='NZDJPY='  and windowTimestamp >  '2012-09-27T07:00:00.000Z'  order by windowTimestamp;" \

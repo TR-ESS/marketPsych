@@ -1,0 +1,3 @@
+#Min Hour Date Day Command
+45 23 * * * /home/thomsonreutersess/marketPsych/common/stop_process feedTrmi.sh &> /dev/null
+50 23 * * * /home/thomsonreutersess/marketPsych/common/startFeedTrmi.sh &> /dev/null

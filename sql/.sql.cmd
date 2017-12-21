@@ -1,0 +1,3 @@
+#!/bin/sh
+bq query -n 1000000 \
+"select * from trmidb.cou_1h  where dataType='News_Social'  and assetCode='IT'  and windowTimestamp >  '2012-09-25T07:00:00.000Z'  order by windowTimestamp"
