@@ -1,0 +1,2 @@
+userName|userPassword|rootUrl|ric|from|to|interval|output|fields
+9010288|Anglers01|hosted.datascopeapi.reuters.com|JNIc1|2017-01-01T00:00:00.000Z|2017-12-31T23:59:59.000Z|OneHour|JNI1H.csv|Open,High,Low,Last
