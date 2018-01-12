@@ -6,7 +6,7 @@ endFolder="LastTwoHours"
 storage='gs://tr-jp-analytics/trmi'
 databases=(trmidb.cou_1h trmidb.cur_1h trmidb.com_agr_1h trmidb.com_enm_1h trmidb.cmpny_grp_1h)
 
-cd $HOME/marketPsych/feed/trmi
+cd $HOME/marketPsych/feed/trmi2
 
 
 count=0
