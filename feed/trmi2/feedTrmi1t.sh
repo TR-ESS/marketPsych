@@ -20,7 +20,7 @@ cat ./transfer1t.$assetType.list | while read line
 do
     date; echo "---> FTP GET $line"
     ### RE-FORMAT
-    sed -e 's/\t\t/\t0.0\t/g' $HOME/marketPsychData/data1t/$line | sed -e 's/\t\t/\t0.0\t/g' > $HOME/marketPsychData/data1t/$line.m
+    sed -e 's/\t$/\t0.0/g' $HOME/marketPsychData/data1t/$line | sed -e 's/\t\t/\t0.0\t/g' | sed -e 's/\t\t/\t0.0\t/g' > $HOME/marketPsychData/data1t/$line.m
 
     ### COPY FILE TO STORAGE
     if [ $Platform == "GCP" ]; then

@@ -170,6 +170,50 @@ class trthRestFeed:
         _fileName='./' + outputName
         tmseries.to_csv(_fileName, index=False)
 
+    # *** METHOD DEFINITION
+    ##### getIntradayBarsData
+    #####
+    def getIntradayBarsData2(self,outputName):
+        if self.uJobID == '':
+            return ''
+        _headers={}
+        _headers['prefer'] = "respond-async"
+        _headers['content-type'] = "text/plain"
+        _headers['Accept-Encoding'] = "gzip"
+        _headers['authorization'] = "Token " + str(self.uAuthKey)
+        _headers['cache-control'] = "no-cache"
+
+        _localUrl="/RestApi/v1/Extractions/RawExtractionResults('" + str(self.uJobID) + "')/$value"
+        self.conn.request('GET',_localUrl,headers=_headers)
+        res=self.conn.getresponse()
+        data=res.read()
+        _fileName='./' + outputName + '.gz'
+        with open(_fileName, 'wb') as fd:
+            fd.write(data)
+        fd.close()
+
+        _uncompressedData=''
+
+        with gzip.open(_fileName, 'rb') as fd:
+            for line in fd:
+                dataLine = line.decode('utf-8')
+                _uncompressedData = _uncompressedData + dataLine
+        fd.close()
+        tmseries = pd.read_csv(StringIO(_uncompressedData))
+        tmseries = tmseries.rename(columns={'#RIC':'assetCode','Date-Time':'windowTimestamp','Open Bid':'Open','High Bid':'High','Low Bid':'Low','Close Bid':'Last'})
+        if 'Alias Underlying RIC' in tmseries:
+            tmseries = tmseries.drop(['Alias Underlying RIC','Domain','GMT Offset','Type'],axis=1)
+        else:
+            tmseries = tmseries.drop(['Domain','GMT Offset','Type'],axis=1)
+        #for i in range(0,len(self.uFields)):
+        #    _shiftColName='s' + str(self.uFields[i])
+        #    tmseries[_shiftColName] = tmseries[str(self.uFields[i])].shift(0)
+        tmseries=tmseries.dropna()
+        print (tmseries)
+    
+        _fileName='./' + outputName
+        tmseries.to_csv(_fileName, index=False)
+
 
 
 

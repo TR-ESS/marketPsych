@@ -34,7 +34,7 @@ do
 	    python ./doFTP.py /TRMI_LIVE/$assetType/$updateType/$endFolder/$line $HOME/marketPsychData/data/$line $confPath
 	fi
 	### RE-FORMAT
-	sed -e 's/\t\t/\t0.0\t/g' $HOME/marketPsychData/data/$line | sed -e 's/\t\t/\t0.0\t/g' > $HOME/marketPsychData/data/$line.m
+	sed -e 's/\t$/\t0.0/g' $HOME/marketPsychData/data/$line | sed -e 's/\t\t/\t0.0\t/g' | sed -e 's/\t\t/\t0.0\t/g' > $HOME/marketPsychData/data/$line.m
 
 	### COPY FILE TO STORAGE
 	if [ $Platform == "GCP" ]; then

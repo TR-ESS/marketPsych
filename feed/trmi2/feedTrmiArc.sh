@@ -36,7 +36,7 @@ do
 	### UNZIP
 	zcat $HOME/marketPsychData/data/arc/$line > $HOME/marketPsychData/data/arc/$line.tsv
 	### RE-FORMAT
-	sed -e 's/\t\t/\t0.0\t/g' $HOME/marketPsychData/data/arc/$line.tsv | sed -e 's/\t\t/\t0.0\t/g' > $HOME/marketPsychData/data/arc/$line.m
+	sed -e 's/\t$/\t0.0/g' $HOME/marketPsychData/data/arc/$line.tsv | sed -e 's/\t\t/\t0.0\t/g' |  sed -e 's/\t\t/\t0.0\t/g' > $HOME/marketPsychData/data/arc/$line.m
 	rm $HOME/marketPsychData/data/arc/$line
 	rm $HOME/marketPsychData/data/arc/$line.tsv
 	### COPY FILE TO STORAGE
