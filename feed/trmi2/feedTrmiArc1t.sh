@@ -7,22 +7,22 @@ storage=$5
 table=$6
 
 
-if [ ! -e ./prev.arc.1t.$assetType.$updateType.list ]; then
-    touch ./prev.arc.1t.$assetType.$updateType.list
+if [ ! -e ./list/prev.arc.1t.$assetType.$updateType.list ]; then
+    touch ./list/prev.arc.1t.$assetType.$updateType.list
 fi
 
 
     ##### VALIDATE NEWLY INCOMING DATA
     if [ $endFolder == "zzz" ]; then
-	python ./listFTP.cgl.py /TRMI/$assetType/$updateType/ | sort -k9 > ./curr.arc.1t.$assetType.$updateType.list
+	python ./listFTP.cgl.py /TRMI/$assetType/$updateType/ | sort -k9 > ./list/curr.arc.1t.$assetType.$updateType.list
     else
-	python ./listFTP.cgl.py /TRMI/$assetType/$updateType/$endFolder/ | sort -k9 > ./curr.arc.1t.$assetType.$updateType.list
+	python ./listFTP.cgl.py /TRMI/$assetType/$updateType/$endFolder/ | sort -k9 > ./list/curr.arc.1t.$assetType.$updateType.list
     fi
-    diff ./prev.arc.1t.$assetType.$updateType.list ./curr.arc.1t.$assetType.$updateType.list > ./diff.arc.1t.$assetType.$updateType.list
-    grep ">" ./diff.arc.1t.$assetType.$updateType.list | awk '{print $10}' > ./transfer.arc.1t.$assetType.$updateType.list
+    diff ./list/prev.arc.1t.$assetType.$updateType.list ./list/curr.arc.1t.$assetType.$updateType.list > ./list/diff.arc.1t.$assetType.$updateType.list
+    grep ">" ./list/diff.arc.1t.$assetType.$updateType.list | awk '{print $10}' > ./list/transfer.arc.1t.$assetType.$updateType.list
 
     ##### DO FTP Whenever newly incoming is detected (Version 3.x)
-    cat ./transfer.arc.1t.$assetType.$updateType.list | grep "\.03"| while read line
+    cat ./list/transfer.arc.1t.$assetType.$updateType.list | grep "\.03"| while read line
     do
 	date; echo "---> FTP GET $line"
 	if [ $endFolder == "zzz" ]; then
@@ -46,5 +46,5 @@ fi
 	fi
     done
 
-cp ./curr.arc.1t.$assetType.$updateType.list ./prev.arc.1t.$assetType.$updateType.list
+cp ./list/curr.arc.1t.$assetType.$updateType.list ./list/prev.arc.1t.$assetType.$updateType.list
 

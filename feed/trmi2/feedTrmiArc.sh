@@ -8,8 +8,8 @@ table=$6
 
 confPath="/home/thomsonreutersess/marketPsychConf/trmiFeed.conf"
 
-if [ ! -e ./prev.arc.$assetType.$updateType.list ]; then
-    touch ./prev.arc.$assetType.$updateType.list
+if [ ! -e ./list/prev.arc.$assetType.$updateType.list ]; then
+    touch ./list/prev.arc.$assetType.$updateType.list
 fi
 
 
@@ -17,15 +17,15 @@ while true
 do
     ##### VALIDATE NEWLY INCOMING DATA
     if [ $endFolder == "zzz" ]; then
-	python ./listFTP.py /TRMI/$assetType/$updateType/ $confPath | sort -k9 > ./curr.arc.$assetType.$updateType.list
+	python ./listFTP.py /TRMI/$assetType/$updateType/ $confPath | sort -k9 > ./list/curr.arc.$assetType.$updateType.list
     else
-	python ./listFTP.py /TRMI/$assetType/$updateType/$endFolder/ $confPath | sort -k9 > ./curr.arc.$assetType.$updateType.list
+	python ./listFTP.py /TRMI/$assetType/$updateType/$endFolder/ $confPath | sort -k9 > ./list/curr.arc.$assetType.$updateType.list
     fi
-    diff ./prev.arc.$assetType.$updateType.list ./curr.arc.$assetType.$updateType.list > ./diff.arc.$assetType.$updateType.list
-    grep ">" ./diff.arc.$assetType.$updateType.list | awk '{print $10}' > ./transfer.arc.$assetType.$updateType.list
+    diff ./list/prev.arc.$assetType.$updateType.list ./list/curr.arc.$assetType.$updateType.list > ./list/diff.arc.$assetType.$updateType.list
+    grep ">" ./list/diff.arc.$assetType.$updateType.list | awk '{print $10}' > ./list/transfer.arc.$assetType.$updateType.list
 
     ##### DO FTP Whenever newly incoming is detected (Version 3.x)
-    cat ./transfer.arc.$assetType.$updateType.list | grep "\.03"| while read line
+    cat ./list/transfer.arc.$assetType.$updateType.list | grep "\.03"| while read line
     do
 	date; echo "---> FTP GET $line"
 	if [ $endFolder == "zzz" ]; then
@@ -49,6 +49,6 @@ do
 	fi
     done
 
-cp ./curr.arc.$assetType.$updateType.list ./prev.arc.$assetType.$updateType.list
+cp ./list/curr.arc.$assetType.$updateType.list ./list/prev.arc.$assetType.$updateType.list
 sleep 360
 done
