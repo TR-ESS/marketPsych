@@ -6,7 +6,7 @@ endFolder=$4
 storage=$5
 table=$6
 
-confPath="/home/thomsonreutersess/marketPsychConf/trmiFeed.conf"
+confPath="$HOME/marketPsychConf/trmiFeed.conf"
 
 if [ ! -e ./list/prev.$assetType.$updateType.list ]; then
     touch ./list/prev.$assetType.$updateType.list
