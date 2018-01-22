@@ -69,7 +69,7 @@ if jobID == '':
     sys.exit(-1)
 print (jobID)
 ##### GET DATA
-tf.getIntradayBarsData(uOutput)
+tf.getIntradayBarsData2(uOutput)
 
 
 

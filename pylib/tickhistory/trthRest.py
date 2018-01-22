@@ -3,6 +3,8 @@
 # 2018 01 09
 # Noriyuki Suzuki / Market Development Manager / Thomson Reuters
 # Class : trthRestFeed
+# Update History:
+#   2018 01 22: Added Requesting EoD Summary 
 
 import os
 import sys
@@ -104,6 +106,37 @@ class trthRestFeed:
         if self.localUrl != '':
             return self.localUrl.split(self.uRootUrl)[1]
         else:
+            return ''
+
+    # *** METHOD DEFINITION
+    ##### REQUEST EoD Summary : added 2018 01 22
+    ##### Posting EoD request parameterse onto end point
+    def reqEodBars(self,ricCode,fromDate,toDate):
+        if self.uAuthKey == '':
+            print ('***ReqEoDBars, Token empty')
+            return ''
+
+
+        _headers={}
+        _headers['prefer'] = 'respond-async'
+        _headers['content-type'] = 'application/json'
+        _headers['authorization'] = 'Token ' + str(self.uAuthKey)
+        _headers['cache-control'] = 'no-cache'
+
+        _payload='{"ExtractionRequest":{"@odata.type":"#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.ElektronTimeseriesExtractionRequest","ContentFieldNames":["Trade Date","RIC","Open","High","Low","Last"],"IdentifierList":{"@odata.type":"#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.InstrumentIdentifierList","InstrumentIdentifiers":[{"Identifier":"%s","IdentifierType": "Ric"}]},"Condition":{"StartDate":"%s","EndDate":"%s"}}}' % (ricCode,fromDate,toDate)
+
+        self.conn.request('POST', '/RestApi/v1/Extractions/ExtractRaw', _payload, _headers)
+        res=self.conn.getresponse()
+        data=res.read()
+        header=res.getheaders()
+        
+        for i in range(0,len(header)):
+            if str(header[i][0]) == 'Location':
+                self.localUrl=header[i][1]
+        if self.localUrl != '':
+            return self.localUrl.split(self.uRootUrl)[1]
+        else:
+            print ('ERROR on Local URL:' + str(res.status) + ': ' + str(res.reason) + ' : ' + str(res.msg))
             return ''
 
     # *** METHOD DEFINITION
@@ -209,6 +242,47 @@ class trthRestFeed:
         #    _shiftColName='s' + str(self.uFields[i])
         #    tmseries[_shiftColName] = tmseries[str(self.uFields[i])].shift(0)
         tmseries=tmseries.dropna()
+        print (tmseries)
+    
+        _fileName='./' + outputName
+        tmseries.to_csv(_fileName, index=False)
+
+    # *** METHOD DEFINITION
+    ##### getEodBarsData
+    ##### 2018 01 22
+    def getEodBarsData2(self,outputName):
+        if self.uJobID == '':
+            return ''
+        _headers={}
+        _headers['prefer'] = "respond-async"
+        _headers['content-type'] = "text/plain"
+        _headers['Accept-Encoding'] = "gzip"
+        _headers['authorization'] = "Token " + str(self.uAuthKey)
+        _headers['cache-control'] = "no-cache"
+
+        _localUrl="/RestApi/v1/Extractions/RawExtractionResults('" + str(self.uJobID) + "')/$value"
+        self.conn.request('GET',_localUrl,headers=_headers)
+        res=self.conn.getresponse()
+        data=res.read()
+        _fileName='./' + outputName + '.gz'
+        with open(_fileName, 'wb') as fd:
+            fd.write(data)
+        fd.close()
+
+        _uncompressedData=''
+
+        with gzip.open(_fileName, 'rb') as fd:
+            for line in fd:
+                dataLine = line.decode('utf-8')
+                _uncompressedData = _uncompressedData + dataLine
+        fd.close()
+        tmseries = pd.read_csv(StringIO(_uncompressedData))
+        tmseries = tmseries.rename(columns={'RIC':'assetCode','Trade Date':'windowTimestamp','Open':'Open','High':'High','Low':'Low','Last':'Last'})
+        # tmseries = tmseries.drop(['Domain','GMT Offset','Type'],axis=1)
+        #for i in range(0,len(self.uFields)):
+        #    _shiftColName='s' + str(self.uFields[i])
+        #    tmseries[_shiftColName] = tmseries[str(self.uFields[i])].shift(0)
+        #tmseries=tmseries.dropna()
         print (tmseries)
     
         _fileName='./' + outputName
